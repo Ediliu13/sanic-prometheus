@@ -25,7 +25,7 @@ def init(
     metrics['RQS_LATENCY'] = Histogram(
         'service_latency_seconds',
         'Service Request Latency Histogram',
-        ['method', 'endpoint'],
+        ['method', 'endpoint', 'http_status'],
         **hist_kwargs
     )
 
@@ -61,6 +61,11 @@ def before_request_handler(request):
 def after_request_handler(request, response, get_endpoint_fn):
     lat = time.time() - request['__START_TIME__']
     endpoint = get_endpoint_fn(request)
-    METRICS['RQS_LATENCY'].labels(request.method, endpoint).observe(lat)
+
+    # Note, that some handlers can ignore response logic,
+    # for example, websocket handler
+    response_status = response.status if response else 200
+    METRICS['RQS_LATENCY'].labels(request.method, endpoint,
+                                  response_status).observe(lat)
     METRICS['RQS_COUNT'].labels(request.method, endpoint,
-                                response.status).inc()
+                                response_status).inc()

@@ -9,7 +9,9 @@ Versions compatibility
 
 * ☑︎ use **0.1.0** for Sanic <= 0.4.1
 * ☑︎ use **0.1.3** for Sanic >= 0.5.0
-* ☑︎ use **0.1.4** if you need multiprocessing support
+* ☑︎ use >= **0.1.4** if you need multiprocessing support
+* ☑︎ use **0.1.6** if you have to use `promtheus-client` <= 0.4.2
+* ☑︎ use **0.1.8** with `prometheus-client` >= 0.5.0
 
 Exposed metrics
 -----------------
@@ -18,8 +20,8 @@ At the moment ``sanic-prometheus`` provides four metrics:
 
 * **sanic_request_count** - total number of requests (labels: *method*, *endpoint*, *status*) [`counter <https://prometheus.io/docs/concepts/metric_types/#counter>`_]
 * **sanic_request_latency_sec** - request latency in seconds (labels: *method*, *endpoint*) [`histogram <https://prometheus.io/docs/concepts/metric_types/#histogram>`_]
-* **sanic_mem_rss_bytes** - resident memory used by the process (in bytes) [`gague <https://prometheus.io/docs/concepts/metric_types/#gauge>`_]
-* **sanic_mem_rss_perc** - a percent of total physical memory used by the process running Sanic [`gague <https://prometheus.io/docs/concepts/metric_types/#gauge>`_]
+* **sanic_mem_rss_bytes** - resident memory used by the process (in bytes) [`gauge <https://prometheus.io/docs/concepts/metric_types/#gauge>`_]
+* **sanic_mem_rss_perc** - a percent of total physical memory used by the process running Sanic [`gauge <https://prometheus.io/docs/concepts/metric_types/#gauge>`_]
   
 Labels
 -----------------
@@ -53,6 +55,8 @@ Actually, there're two ways to run monitoring:
    It just adds a new ``route`` to your Sanic app, exposing ``/metrics`` endpoint
    on the same host and port your Sanic server runs. It might be useful if you run your
    app in a container and you do not want to expose different ports for metrics and everything else.
+   You can customize the ``/metrics`` endpoint by passing the ``metrics_path`` keyword argument:
+   ``monitor(app, metrics_path='/my_metrics_path').expose_endpoint()``.
 2. ``monitor(app).start_server(addr=..., port=...)``.
    Runs a HTTP server on given address and port and exposes ``/metrics`` endpoint on it.
    This might be useful if you want to restrict access to your ``/metrics`` endpoint using some

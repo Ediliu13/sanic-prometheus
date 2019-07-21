@@ -3,6 +3,9 @@
 bootstrap:
 	pip install -r requirements.txt
 
+bootstrap-dev:
+	pip install -r requirements-dev.txt
+
 install: clean
 	python setup.py install
 
@@ -16,5 +19,5 @@ integration-test:
 	./tests/run_multiproc_it.sh
 
 clean:
-	rm -rf dist *.egg.info build
+	rm -rf dist *.egg.info *.egg-info build
 
